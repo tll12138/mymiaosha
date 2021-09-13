@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css"/>
+    <link rel="stylesheet" href="css/components.css" type="text/css"/>
+    <link rel="stylesheet" href="css/login.css" type="text/css"/>
+    <title>创建商品</title>
+
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js" type="text/javascript"></script>
+</head>
+
+<body class="login">
+
+<div >
+
+    <form action="index.html">
+        <div class="content">
+            <h1 class="form-title">创建商品</h1>
+            <img src="#" alt=""/>
+            <h4>Enter your personal details below</h4>
+            <div class="form-group">
+                <label>商品名</label>
+                <div>
+                    <input class="form-control" type="text" placeholder="商品名" name="name" id="name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>商品价格</label>
+                <div>
+                    <input class="form-control" type="text" placeholder="商品价格" name="price" id="price">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>商品库存</label>
+                <div>
+                    <input class="form-control" type="text" placeholder="商品库存" name="stock" id="stock">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>商品描述</label>
+                <div>
+                    <input class="form-control" type="text" placeholder="商品描述" name="description" id="description">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>图片</label>
+                <div>
+                    <input class="form-control" placeholder="图片" name="imgUrl" id="imgUrl">
+                </div>
+            </div>
+            <div class="form-group">
+                <button class="btn blue" id="create" type="submit">创建</button>
+                <button class="btn green" id="goback" type="button">返回商品列表</button>
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+</body>
+
+<script>
+
+    jQuery(document).ready(function (){
+
+        $("#goback").on("click",function () {
+            window.location.href="itemList.html";
+        })
+
+        $("#create").on("click",function (){
+            var name = $("#name").val();
+            var price = $("#price").val();
+            var stock = $("#stock").val();
+            var description = $("#description").val();
+            var imgUrl = $("#imgUrl").val();
+            if (name==null||name==""){
+                alert("商品名不能为空");
+                return false;
+            }
+            if (price==null){
+                alert("商品价格不能为空");
+                return false;
+            }
+            if (stock==null){
+                alert("商品库存不能为空");
+                return false;
+            }
+            if (description==null||description==""){
+                alert("商品描述不能为空");
+                return false;
+            }
+            if (imgUrl==null||imgUrl==""){
+                alert("图片不能为空");
+                return false;
+            }
+            $.ajax({
+                type:"POST",
+                contentType:"application/x-www-form-urlencoded",
+                url:"http://localhost:8888/item/create",
+                data:{
+                    "name":$("#name").val(),
+                    "price":price,
+                    "stock":stock,
+                    "description":description,
+                    "imgUrl":imgUrl
+                },
+                xhrFields:{withCredentials:true},
+                success:function (data){
+                    if (data.status=="success"){
+                        alert("创建成功");
+                        window.location.href="createItem.html";
+                    }else {
+                        alert("success注册失败，原因为："+data.data.errMsg);
+                    }
+                },
+                error:function (data){
+                    alert("error注册失败，原因为："+data.responseText);
+                }
+            });
+            return false;
+        });
+
+    });
+
+</script>
+
+</html>

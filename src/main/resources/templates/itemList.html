@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css"/>
+    <link rel="stylesheet" href="css/components.css" type="text/css"/>
+    <link rel="stylesheet" href="css/login.css" type="text/css"/>
+    <title>商品列表详情</title>
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js" type="text/javascript"></script>
+    <!--    <style>-->
+    <!--        table.gridtable {-->
+    <!--            font-family: verdana, arial, sans-serif;-->
+    <!--            font-size: 15px;-->
+    <!--            color: #333333;-->
+    <!--            border-width: 1px;-->
+    <!--            border-color: #666666;-->
+    <!--            border-collapse: collapse;-->
+    <!--        }-->
+
+    <!--        table.gridtable th {-->
+    <!--            border-width: 1px;-->
+    <!--            padding: 30px;-->
+    <!--            border-style: solid;-->
+    <!--            border-color: #666666;-->
+    <!--            background-color: #dedede;-->
+    <!--        }-->
+
+    <!--        table.gridtable td {-->
+    <!--            border-width: 1px;-->
+    <!--            padding: 8px;-->
+    <!--            border-style: solid;-->
+    <!--            border-color: #666666;-->
+    <!--            background-color: #ffffff;-->
+    <!--        }-->
+    <!--    </style>-->
+
+</head>
+
+<body>
+
+<div>
+
+    <form>
+        <div class="content">
+            <h1 class="form-title" style="text-align: center">商品列表浏览</h1>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>商品名</th>
+                        <th>商品图片</th>
+                        <th>商品描述</th>
+                        <th>商品价格</th>
+                        <th>商品库存</th>
+                        <th>商品销量</th>
+                    </tr>
+                    </thead>
+                    <tbody id="contain">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </form>
+
+</div>
+
+
+</body>
+
+<script>
+
+    //定义全局商品数组信息
+    var g_itemList = [];
+    jQuery(document).ready(function () {
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:8888/item/list",
+            xhrFields: {withCredentials: true},
+            success: function (data) {
+                if (data.status == "success") {
+                    g_itemList = data.data;
+                    reloadDom();
+                } else {
+                    alert("success商品列表获取失败，原因为：" + data.data.errMsg);
+                }
+            },
+            error: function (data) {
+                alert("error商品列表获取失败，原因为：" + data.responseText);
+            }
+        });
+    });
+
+    function reloadDom() {
+        for (var i = 0; i < g_itemList.length; i++) {
+            var itemVO = g_itemList[i];
+            var dom = "<tr data-id='" + itemVO.id + "' id='itemDetail" + itemVO.id + "'><td>" + itemVO.name + "</td><td><img style='width: 100px;height: auto;' src='" + itemVO.imgUrl + "'/></td><td>" + itemVO.description + "</td><td>" + itemVO.price + "</td><td>" + itemVO.stock + "</td><td>" + itemVO.sales + "</td></tr>";
+            $("#contain").append($(dom));
+            $("#itemDetail" + itemVO.id).on("click", function (e) {
+                window.location.href = "getItem.html?id=" + $(this).data("id");
+            });
+        }
+    }
+
+</script>
+</html>
